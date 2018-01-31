@@ -12,6 +12,7 @@ defmodule Vigilo.Application do
       supervisor(VigiloWeb.Endpoint, []),
       # Start your own worker by calling: Vigilo.Worker.start_link(arg1, arg2, arg3)
       # worker(Vigilo.Worker, [arg1, arg2, arg3]),
+      worker(Vigilo.Repeat, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

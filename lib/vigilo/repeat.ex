@@ -5,15 +5,15 @@ defmodule Vigilo.Repeat do
     GenServer.start_link(__MODULE__, %{})
   end
 
-  def init(_) do
+  # should be [] to start with
+  def init(state) do
     schedule()
-    { :ok, [] }
+    { :ok, state }
   end
 
   def handle_info(:work, state) do
-    # do work
     schedule()
-    { :noreply, state }
+    { :noreply, Vigilo.Attendance.take_attendance() }
   end
 
   defp schedule() do
