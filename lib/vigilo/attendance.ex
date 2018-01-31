@@ -1,11 +1,14 @@
 defmodule Vigilo.Attendance do
+  require Logger
   @moduledoc """
   Perform the logic of the attendance check. Read the status of the bluetooth
   scan to see who's around.
   """
 
   def take_attendance() do
-    read() |> parse() |> filter()
+    att = read() |> parse() |> filter()
+    Logger.info "Scan found: #{format(att)}"
+    att
   end
 
   def read() do
@@ -31,5 +34,13 @@ defmodule Vigilo.Attendance do
       [ mac, name ] = Regex.split(~r{\s+}, f)
       %Vigilo.Person{name: name, mac: mac}
     end)
+  end
+
+  def format(maps) do
+    maps
+    |> Enum.map(fn %{name: name, mac: addr} ->
+      "Device '#{name}' with address #{addr}"
+    end)
+    |> Enum.join(", ")
   end
 end

@@ -11,7 +11,7 @@ defmodule Vigilo.Repeat do
     { :ok, state }
   end
 
-  def handle_info(:work, state) do
+  def handle_info(:work, _state) do
     schedule()
     { :noreply, Vigilo.Attendance.take_attendance() }
   end
