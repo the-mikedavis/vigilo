@@ -2,7 +2,7 @@ defmodule Vigilo.Repeat do
   use GenServer
 
   def start_link do
-    GenServer.start_link(__MODULE__, %{})
+    GenServer.start_link(__MODULE__, %{}, name: :attendant)
   end
 
   # should be [] to start with
@@ -14,6 +14,10 @@ defmodule Vigilo.Repeat do
   def handle_info(:work, _state) do
     schedule()
     { :noreply, Vigilo.Attendance.take_attendance() }
+  end
+
+  def handle_call(:devices, _from, state) do
+    { :reply, state, state }
   end
 
   defp schedule() do

@@ -2,6 +2,7 @@ defmodule VigiloWeb.PageController do
   use VigiloWeb, :controller
 
   def index(conn, _params) do
-    render conn, "index.html"
+    devs = GenServer.call(:attendant, :devices)
+    render conn, "index.html", devices: devs
   end
 end
