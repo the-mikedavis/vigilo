@@ -8,6 +8,6 @@ defmodule Vigilo do
   """
 
   defmodule Person do
-    defstruct name: "", mac: ""
+    defstruct name: "", mac: "", present: false
   end
 end

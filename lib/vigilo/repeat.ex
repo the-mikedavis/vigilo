@@ -21,6 +21,6 @@ defmodule Vigilo.Repeat do
   end
 
   defp schedule() do
-    Process.send_after(self(), :work, 1000 * 10)
+    Process.send_after(self(), :work, 1000 * 30) # every 30 sec
   end
 end

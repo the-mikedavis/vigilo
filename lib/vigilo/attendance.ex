@@ -5,36 +5,43 @@ defmodule Vigilo.Attendance do
   scan to see who's around.
   """
 
+  defp pmap(seq, func) do
+    seq
+    |> Enum.map(&(Task.async(fn -> func.(&1) end)))
+    |> Enum.map(&Task.await/1)
+  end
+
   def take_attendance() do
-    att = read() |> parse() |> filter()
+    att = Application.get_env(:vigilo, :macs)
+          |> pmap(&take_attendance/1)   # run in parallel because it's expensive
+          |> Enum.filter(&filter/1)
     Logger.info "Scan found: #{format(att)}"
     att
   end
 
-  def read() do
-    case System.cmd("hcitool", ["scan"]) do
+  def take_attendance(mac) do
+    mac |> read() |> parse()
+  end
+
+  def read(mac) do
+    case System.cmd("hcitool", ["name", mac]) do
       { response, 0 } ->
-        response
+        { String.trim(response), mac }  # remove trailing newline
       { error,    _ } ->
         exit "hcitool (bluetooth) reported an error: " <> error
     end
   end
 
-  def parse(input) do
-    input
-    |> String.split("\n", trim: true)
-    |> Enum.map(&String.trim/1)
+  # not present
+  def parse({name, mac}) when length(name) == 0 do
+    %Vigilo.Person{mac: mac, present: false}
+  end
+  # present
+  def parse({name, mac}) do
+    %Vigilo.Person{mac: mac, name: name, present: true}
   end
 
-  # no results found
-  def filter([ _ ]), do: []
-  # found at least one result
-  def filter([ _searching | found ]) do
-    Enum.map(found, fn f ->
-      [ mac, name ] = Regex.split(~r{\s+}, f)
-      %Vigilo.Person{name: name, mac: mac}
-    end)
-  end
+  def filter(%{present: here}), do: here
 
   def format([]), do: "nothing."
   def format(maps) do
