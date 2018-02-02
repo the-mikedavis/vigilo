@@ -8,7 +8,7 @@ defmodule Vigilo.Attendance do
   defp pmap(seq, func) do
     seq
     |> Enum.map(&(Task.async(fn -> func.(&1) end)))
-    |> Enum.map(&Task.await/1)
+    |> Enum.map(&(Task.await(&1, 10 * 1000)))
   end
 
   def take_attendance() do
@@ -33,7 +33,7 @@ defmodule Vigilo.Attendance do
   end
 
   # not present
-  def parse({name, mac}) when length(name) == 0 do
+  def parse({"", mac}) do
     %Vigilo.Person{mac: mac, present: false}
   end
   # present
