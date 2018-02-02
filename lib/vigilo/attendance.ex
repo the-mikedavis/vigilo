@@ -12,7 +12,7 @@ defmodule Vigilo.Attendance do
   end
 
   def read() do
-    case System.cmd("hcitool", []) do
+    case System.cmd("hcitool", ["scan"]) do
       { response, 0 } ->
         response
       { error,    _ } ->
@@ -36,6 +36,7 @@ defmodule Vigilo.Attendance do
     end)
   end
 
+  def format([]), do: "nothing."
   def format(maps) do
     maps
     |> Enum.map(fn %{name: name, mac: addr} ->
