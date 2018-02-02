@@ -1,10 +1,10 @@
 <%= if @devices == [] do %>
-  <h1>No one's here... Spooky...</h1>
+  <h3>No one's here... Spooky...</h3>
 <% else %>
-  <h1>Devices I found:</h1>
+  <h3>Devices I found:</h3>
   <ul>
   <%= for %{name: n, mac: m} <- @devices do %>
-    <li title="<%= m %>"><%= n %></li>
+    <li class="btn btn-success" title="<%= m %>"><%= n %></li>
   <% end %>
   </ul>
 <% end %>
