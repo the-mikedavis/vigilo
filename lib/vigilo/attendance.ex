@@ -55,6 +55,8 @@ defmodule Vigilo.Attendance do
 
   @url "https://mcarsondavis.com/api/vigilo"
   def post(payload) do
-    HTTPoison.post!(@url, Poison.encode!(payload))
+    HTTPoison.post!(@url,
+                    Poison.encode!(payload),
+                    [{"Content-Type", "application/json"}])
   end
 end
