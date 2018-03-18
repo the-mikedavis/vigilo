@@ -16,6 +16,7 @@ defmodule Vigilo.Attendance do
           |> pmap(&take_attendance/1)   # run in parallel because it's expensive
           |> Enum.filter(&filter/1)
     Logger.info "Scan found: #{format(att)}"
+    post(att)
     att
   end
 
@@ -50,5 +51,10 @@ defmodule Vigilo.Attendance do
       "Device '#{name}' with address #{addr}"
     end)
     |> Enum.join(", ")
+  end
+
+  @url "https://mcarsondavis.com/api/vigilo"
+  def post(payload) do
+    HTTPoison.post!(@url, Poison.encode!(payload))
   end
 end
