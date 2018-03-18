@@ -16,8 +16,12 @@ defmodule Vigilo.Attendance do
           |> pmap(&take_attendance/1)   # run in parallel because it's expensive
           |> Enum.filter(&filter/1)
     Logger.info "Scan found: #{format(att)}"
-    post(att)
+
     att
+    |> Enum.map(&extract_names/1)
+    |> post()
+    att
+
   end
 
   def take_attendance(mac) do
@@ -52,6 +56,8 @@ defmodule Vigilo.Attendance do
     end)
     |> Enum.join(", ")
   end
+
+  def extract_names(%{name: name}), do: name
 
   @url "https://mcarsondavis.com/api/vigilo"
   def post(payload) do
