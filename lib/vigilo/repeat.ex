@@ -2,7 +2,7 @@ defmodule Vigilo.Repeat do
   use GenServer
 
   def start_link do
-    GenServer.start_link(__MODULE__, %{}, name: :attendant)
+    GenServer.start_link(__MODULE__, [], name: :attendant)
   end
 
   # should be [] to start with
